@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,64 +10,73 @@ datasource db {
 model Employee {
   id        String   @id @default(cuid())
   userName  String
-  phone     String
-  password  String
-  role      String
+  phone     String    @unique
+  password  String   
+  role      String   @default("staff")
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   orders    Order[]
 }
 
 model Customer {
-  id            String           @id @default(cuid())
-  phone         String           @unique
-  name          String
-  loyaltyPoints Int
-  firstBoughtAt DateTime
-  orders        Order[]
+  id              String            @id @default(cuid())
+  phone           String            @unique
+  name            String
+  loyaltyPoints   Int
+  firstBoughtAt   DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  orders          Order[]
   purchaseHistory PurchaseHistory[]
 }
 
 model Category {
-  id    String   @id @default(cuid())
-  name  String
-  photo String
-  products Product[]
+  id        String    @id @default(cuid())
+  name      String
+  photo     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  products  Product[]
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  name        String
-  description String
-  photo       String
-  categoryId  String
-  stock       Int
-  isAvailable Boolean
-  promotion   String
-  createdAt   DateTime    @default(now())
-  category    Category    @relation(fields: [categoryId], references: [id])
-  orderItems  OrderItem[]
-  promotions  Promotion[]
+  id              String            @id @default(cuid())
+  name            String
+  description     String
+  photo           String
+  categoryId      String
+  stock           Int
+  price           Float
+  isAvailable     Boolean
+  promotion       String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  category        Category          @relation(fields: [categoryId], references: [id])
+  orderDetails    OrderDetail[]
+  promotions      Promotion[]
   purchaseHistory PurchaseHistory[]
 }
 
 model Order {
-  id           String    @id @default(cuid())
+  id           String        @id @default(cuid())
   customerId   String
   employeeId   String
   totalPrice   Float
   paidCash     Float
   returnCash   Float
-  purchaseDate DateTime  @default(now())
-  customer     Customer  @relation(fields: [customerId], references: [id])
-  employee     Employee  @relation(fields: [employeeId], references: [id])
-  orderItems   OrderItem[]
+  purchaseDate DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  customer     Customer      @relation(fields: [customerId], references: [id])
+  employee     Employee      @relation(fields: [employeeId], references: [id])
+  orderDetails OrderDetail[]
 }
 
-model OrderItem {
-  id        String @id @default(cuid())
+model OrderDetail {
+  id        String  @id @default(cuid())
   orderId   String
   productId String
   quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
 }
@@ -83,6 +86,8 @@ model PurchaseHistory {
   customerId   String
   productId    String
   purchaseDate DateTime @default(now())
+  price        Float?
+  updatedAt    DateTime @updatedAt
   customer     Customer @relation(fields: [customerId], references: [id])
   product      Product  @relation(fields: [productId], references: [id])
 }
@@ -93,5 +98,7 @@ model Promotion {
   type      String
   startDate DateTime
   endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   product   Product  @relation(fields: [productId], references: [id])
 }

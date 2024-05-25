@@ -8,7 +8,7 @@ const categories: Prisma.CategoryCreateInput[] = [
   },
   {
     id: 'cat2',
-    name: 'Clothing',
+    name: 'Headset',
     photo: 'https://example.com/photos/clothing.jpg',
   },
   {
