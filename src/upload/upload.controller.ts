@@ -14,7 +14,7 @@ import { CreateUploadDto } from './dto/create-upload.dto';
 import { UpdateUploadDto } from './dto/update-upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { join } from 'path';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -37,7 +37,8 @@ export class UploadController {
       storage: diskStorage({
         destination: join(__dirname, '..', '..', 'uploads'), // Ensure it points to the correct directory
         filename: (req, file, callback) => {
-          const uniqueSuffix = `${uuidv4()}-${file.originalname}`;
+          // const uniqueSuffix = `${uuidv4()}-${file.originalname}`;
+          const uniqueSuffix = `${Math.random()}-${file.originalname}`;
           callback(null, uniqueSuffix);
         },
       }),

@@ -1,13 +1,40 @@
-version: '3.9'
+version: "3.9"
 
 services:
   postgres:
+    # restart: always
     image: postgres:14-alpine
     ports:
       - 5432:5432
     volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=S3cret
       - POSTGRES_USER=citizix_user
       - POSTGRES_DB=citizix_db
+
+  nest-js:
+    build: . # Build the NestJS application from the current directory
+    # restart: always
+    develop:
+      watch:
+        - path: ./api/package.json # Monitor all files in the current directory (project root)
+          action: rebuild
+        - path: ./api/package-lock.json
+          action: rebuild
+        - path: ./prisma/schema.prisma # Monitor Prisma schema file changes
+          action: rebuild # Rebuild the image when Prisma schema changes
+        - path: ./api
+          target: /app
+          action: sync # Automatically sync changes to the container
+    ports:
+      - 3000:3000 # Replace with the port you want to expose
+    volumes:
+      - .:/app # Sync local directory with container's /app directory
+      - /app/node_modules # Ensure node_modules is not overwritten
+    environment:
+      - DATABASE_URL=postgres://citizix_user:S3cret@postgres:5432/citizix_db # Use postgres alias for internal connection
+      - NODE_ENV=development # Optional: Set development environment for NestJS
+  
+volumes:
+  postgres-data: # Persistent storage for the database
