@@ -12,6 +12,8 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
+  app.setGlobalPrefix('api', { exclude: ['/'] });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Automatically strip non-whitelisted properties
