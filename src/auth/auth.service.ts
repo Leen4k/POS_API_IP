@@ -40,4 +40,20 @@ export class AuthService {
       accessToken: this.jwtService.sign({ id: user.id, role: user.role }),
     };
   }
+
+  async getUserProfile(userId: string): Promise<any> {
+    const user = await this.prisma.employee.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`No user found for id: ${userId}`);
+    }
+
+    return {
+      id: user.id,
+      phone: user.phone,
+      role: user.role,
+    };
+  }
 }
