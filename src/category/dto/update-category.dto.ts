@@ -3,14 +3,11 @@ import { CreateCategoryDto } from './create-category.dto';
 import { IsString } from 'class-validator';
 
 export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
-    @IsString()
-    id: string;
-    
-    @ApiProperty()
-    @IsString()
-    name: string;
-    
-    @ApiProperty()
-    @IsString()
-    photo: string;
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  photo: string;
 }
