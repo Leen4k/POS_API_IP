@@ -48,6 +48,7 @@ export class OrderController {
         error instanceof BadRequestException ||
         error instanceof NotFoundException
       ) {
+        console.log(error);
         throw error; // Re-throw to keep the original status code
       }
       console.log(error);
